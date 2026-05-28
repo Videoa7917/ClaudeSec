@@ -72,11 +72,11 @@ ClaudeSec is an AI-augmented security testing assistant designed for professiona
 ## 📽 Demo
 
 <p align="center">
-  <a href="https://asciinema.org/~mmlqm" target="_blank">
-    <img src="https://asciinema.org/a/your-cast-id.svg" width="720" alt="ClaudeSec Demo">
+  <a href="https://asciinema.org/a/vQUqSmlOmPMljKv6" target="_blank">
+    <img src="https://asciinema.org/a/vQUqSmlOmPMljKv6.svg" width="720" alt="ClaudeSec Demo">
   </a>
   <br>
-  <i>Click to play terminal demo (recorded with asciinema)</i>
+  <i>Click to play terminal demo (recording expires in 7 days — <a href="https://asciinema.org/connect/b37f31eb-cfef-428c-b0d5-6357fb7cf3d8">link to your account</a> to keep it)</i>
 </p>
 
 Or run it yourself:
