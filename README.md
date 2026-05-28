@@ -18,6 +18,18 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/mmlqm/ClaudeSec/stargazers">
+    <img src="https://img.shields.io/github/stars/mmlqm/ClaudeSec?style=social" alt="GitHub Stars">
+  </a>
+  <a href="https://github.com/mmlqm/ClaudeSec/forks">
+    <img src="https://img.shields.io/github/forks/mmlqm/ClaudeSec?style=social" alt="GitHub Forks">
+  </a>
+  <a href="https://github.com/mmlqm/ClaudeSec/watchers">
+    <img src="https://img.shields.io/github/watchers/mmlqm/ClaudeSec?style=social" alt="GitHub Watchers">
+  </a>
+</p>
+
+<p align="center">
   <i>Conforms to PTES v2.0, OWASP Testing Guide v4.2, and NIST SP 800-115 methodologies.</i>
 </p>
 
@@ -54,6 +66,44 @@ ClaudeSec is an AI-augmented security testing assistant designed for professiona
 | Attack chain identification | Requires expert intuition | AI correlates low-severity issues into exploit chains |
 | Reporting overhead | Hours of documentation work | Auto-generated structured reports |
 | Methodology consistency | Varies by practitioner skill level | Standardized PTES-aligned workflow |
+
+---
+
+## 📽 Demo
+
+<p align="center">
+  <a href="https://asciinema.org/~mmlqm" target="_blank">
+    <img src="https://asciinema.org/a/your-cast-id.svg" width="720" alt="ClaudeSec Demo">
+  </a>
+  <br>
+  <i>Click to play terminal demo (recorded with asciinema)</i>
+</p>
+
+Or run it yourself:
+
+```bash
+# Quick demo on a test target
+git clone https://github.com/mmlqm/ClaudeSec.git
+cd ClaudeSec
+bash scripts/install.sh --min
+
+# Start reconnaissance (replace with your own test target)
+# /recon example.com
+```
+
+### Record Your Own Demo
+
+```bash
+# Install asciinema
+sudo apt install asciinema -y
+
+# Start recording
+asciinema rec claudesec-demo.cast
+
+# Run your command, then Ctrl+D to stop
+# Upload and get embed link
+asciinema upload claudesec-demo.cast
+```
 
 ---
 
