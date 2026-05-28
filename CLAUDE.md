@@ -1,20 +1,20 @@
 # ClaudeSec — AI-Driven Security Testing Framework
 
 > **Author**: ClaudeSec Team
-> **Version**: 2.0.0
+> **Version**: 2.1.0
 > **License**: MIT
-> **Description**: An AI-powered penetration testing assistant framework that orchestrates industry-standard security tools with Claude's reasoning capabilities.
+> **Description**: AI-powered penetration testing assistant orchestrating industry-standard security tools with Claude's reasoning capabilities.
 
-## ⚠️ Legal Notice
+## ⚠️ Legal & Ethical Notice
 
-This framework is **ONLY** for:
-- Authorized penetration testing engagements
-- CTF (Capture The Flag) competitions
-- Self-hosted lab environments
-- Bug bounty programs with clear scope authorization
+This framework is **STRICTLY FOR AUTHORIZED USE ONLY**:
+- Authorized penetration testing engagements (written authorization required)
+- CTF competitions and wargames
+- Self-hosted laboratory environments  
+- Bug bounty programs (in-scope targets only)
 - Security research on your own infrastructure
 
-**Unauthorized use is illegal.** Users assume all legal responsibility.
+**Unauthorized use constitutes illegal activity.** Users assume all legal responsibility.
 
 ---
 
@@ -23,219 +23,339 @@ This framework is **ONLY** for:
 ### Intelligence Gathering
 
 #### `/recon <target>`
-Full-spectrum reconnaissance: subdomain enumeration → port scanning → fingerprinting → directory bruteforce → JS analysis → AI-powered attack surface mapping.
+**Full-spectrum reconnaissance**: subdomain enumeration → port scanning → fingerprinting → directory bruteforce → JS analysis → AI-powered attack surface mapping.
 
 **Usage**: `/recon example.com` or `/recon 192.168.1.1`
 
-```yaml
-Execution Flow:
-  Phase 1 - Asset Discovery:
-    subfinder        → Passive subdomain enumeration (30+ sources)
-    waybackurls      → Historical URL extraction
-    crt.sh           → Certificate transparency logs
-    gau              → Multi-source URL aggregation
-  Phase 2 - Network Probe:
-    naabu            → Fast port scan (top 1000)
-    nmap -sC -sV     → Service version detection
-    nmap -O          → OS fingerprinting
-  Phase 3 - Web Recon:
-    whatweb          → CMS/framework/WAF identification
-    httpx            → HTTP probe & response analysis
-  Phase 4 - Directory Enum:
-    ffuf             → High-speed directory bruteforce
-    dirsearch        → Multi-extension file discovery
-  Phase 5 - JS Analysis:
-    hakrawler        → JS file extraction
-    gf patterns      → API endpoints & secret scanning
-  Phase 6 - AI Synthesis:
-    Attack surface report
-    Vulnerability probability assessment
-    Recommended next steps
+**Execution Flow**:
 ```
+Phase 1 — Asset Discovery
+  subfinder  → Passive enumeration (30+ sources, recursive)
+  crt.sh     → Certificate transparency log query
+  gau        → Multi-source URL aggregation (Wayback, OTX, CommonCrawl)
+  httpx      → Host validation & HTTP probe (status, title, technology)
+
+Phase 2 — Network Reconnaissance
+  naabu      → High-speed port scan (configurable port range)
+  nmap -sCV  → Service version detection + default scripts
+  nmap -O    → OS fingerprinting via TCP/IP stack analysis
+
+Phase 3 — Web Fingerprinting
+  whatweb    → CMS/framework/WAF identification (1800+ plugins)
+  httpx      → Response header analysis & technology inference
+  wafw00f    → WAF classification & fingerprinting
+
+Phase 4 — Directory & File Enumeration
+  ffuf       → Multi-wordlist directory bruteforce (configurable)
+  dirsearch  → Multi-extension file discovery (php, asp, bak, env, zip)
+  Priority:  config → api docs → admin → backups → lfi
+
+Phase 5 — JavaScript Analysis
+  hakrawler  → JS file extraction & endpoint discovery
+  gf         → Pattern matching: API keys, JWTs, endpoints, debug paths
+  regex      → Hardcoded secrets: AK/SK, tokens, internal URLs
+
+Phase 6 — AI Synthesis
+  Attack surface report with probability heatmap
+  Prioritized exploitation path recommendations
+  Estimated effort assessment (Low/Medium/High/Critical)
+  Next-step tool selection guidance
+```
+
+---
+
+#### `/subs <domain>`
+**Deep subdomain enumeration**: Focused, multi-source subdomain discovery with live host validation.
+
+**Usage**: `/subs example.com`
+
+**Execution**:
+```
+subfinder -d <domain> -all -recursive | httpx -silent -status-code -title -tech-detect
+```
+AI analyzes: subdomain count, categorization (admin, dev, api, cdn), live host verification, technology mapping.
 
 ---
 
 ### Vulnerability Assessment
 
 #### `/scan <target>`
-Multi-dimensional vulnerability scanning covering OWASP Top 10 and business logic flaws.
+**Multi-dimensional vulnerability assessment**: 19+ vulnerability categories with context-aware AI verification and CVSS 3.1 scoring.
 
 **Usage**: `/scan example.com` or `/scan https://target.com/api`
 
-```yaml
-Detection Matrix:
-  🔴 Critical/High:
-    - SQL Injection (error-based, time-blind, boolean-blind)
-    - Authentication bypass (IDOR, privilege escalation)
-    - Remote Code Execution (if applicable)
-    - Arbitrary file upload
-    - Sensitive data exposure (.git, .env, credentials)
+**Detection Matrix (by severity)**:
 
-  🟡 Medium:
-    - Cross-Site Scripting (stored, reflected, DOM)
-    - Server-Side Template Injection
-    - Server-Side Request Forgery
-    - Local/Remote File Inclusion
-    - JWT vulnerabilities (alg:none, weak key, kid injection)
-    - Business logic flaws
-    - CSRF / SSO misconfiguration
+| Priority | Category | Coverage |
+|----------|----------|----------|
+| 🔴 **Critical** | Remote Code Execution | Command injection, unsafe deserialization, template injection |
+| 🔴 **Critical** | SQL Injection | Error-based, time-blind, boolean-blind, stacked queries |
+| 🔴 **Critical** | Authentication Bypass | IDOR, privilege escalation, JWT attack |
+| 🔴 **Critical** | Arbitrary File Upload | Content-type, extension, content validation bypasses |
+| 🔴 **Critical** | Sensitive Data Exposure | .git, .env, cloud credentials, hardcoded secrets |
+| 🟠 **High** | Cross-Site Scripting | Stored, reflected, DOM-based (context-aware) |
+| 🟠 **High** | SSRF | Cloud metadata, internal port scan, protocol smuggling |
+| 🟠 **High** | LFI/RFI | Path traversal, PHP wrappers, log poisoning |
+| 🟠 **High** | Unauthenticated Access | API endpoints without auth headers |
+| 🟡 **Medium** | SSTI | Jinja2, Twig, Freemarker, Velocity, JSP EL |
+| 🟡 **Medium** | CORS Misconfiguration | Origin reflection with credentials |
+| 🟡 **Medium** | JWT Weaknesses | alg:none, weak HMAC secret, kid injection |
+| 🟡 **Medium** | Business Logic Flaws | Payment manipulation, race conditions, rate limiting bypass |
+| 🟢 **Low** | Security Headers | Missing HSTS, CSP, X-Frame-Options, X-Content-Type-Options |
+| 🟢 **Low** | TLS/SSL Issues | Weak ciphers, protocol downgrade, certificate validation |
+| 🟢 **Low** | Information Disclosure | Banner grabbing, stack traces, debug modes |
 
-  🟢 Low:
-    - CORS misconfiguration
-    - Missing security headers
-    - Information disclosure (banner, debug info)
-    - Weak password policy
-    - HTTPS configuration issues
+---
+
+#### `/attack-surface <target>`
+**Comprehensive attack surface analysis** with exploitation path mapping and risk scoring.
+
+**Usage**: `/attack-surface example.com`
+
+**Output**:
+```
+┌──────────────────────────────────────────────────┐
+│              Attack Surface Report                │
+├──────────────────────────────────────────────────┤
+│ Target:  example.com                              │
+├──────────────────────────────────────────────────┤
+│ NETWORK        │ Ports: 5 open │ Services: 4     │
+│────────────────┼───────────────┼─────────────────┤
+│ WEB APPS       │ 2 identified  │ API endpoints: 23│
+│────────────────┼───────────────┼─────────────────┤
+│ SUBDOMAINS     │ 23 live       │ Admin panels: 3  │
+│────────────────┼───────────────┼─────────────────┤
+│ SENSITIVE      │ 4 exposures   │ Critical: 1     │
+├────────────────┴───────────────┴─────────────────┤
+│ ATTACK PATHS                                      │
+│ Path 1 [92%] → AWS key leak → S3 breach → RCE    │
+│ Path 2 [78%] → WP outdated → CVE exploit → shell │
+│ Path 3 [65%] → .git leak → creds → DB access     │
+└──────────────────────────────────────────────────┘
 ```
 
 ---
 
-### Specialized Operations
-
-#### `/attack-surface <target>`
-Comprehensive attack surface analysis and exploitation path mapping.
-
-**Usage**: `/attack-surface example.com`
-
-**Output structure**:
-```
-Target: example.com
-├── Exposed Ports & Services
-│   ├── 80/tcp  → Apache 2.4.49 (CVE-2021-41773)
-│   └── 22/tcp  → OpenSSH 7.9
-├── Web Application
-│   ├── Fingerprint: WordPress 5.8 (known CVEs)
-│   └── WAF: Cloudflare (bypass techniques available)
-├── Subdomains
-│   ├── admin.example.com (login portal)
-│   └── dev.example.com (staging environment)
-├── Sensitive Findings
-│   ├── /.git/config exposed
-│   └── /swagger/ API documentation
-├── Attack Paths (sorted by likelihood)
-│   ├── [EXPLOITABLE] Path 1: ... → ... → ...
-│   └── [THEORETICAL] Path 2: ... → ... → ...
-└── Difficulty Assessment
-    └── Estimated effort: Medium (2-3 hours)
-```
-
 #### `/check <url>`
-Rapid single-point vulnerability verification.
+**Rapid single-point verification**: Test a specific URL for common vulnerability classes.
 
 **Usage**: `/check https://target.com/api/user?id=1`
 
-```yaml
-Automatic Checks:
-  - Unauthenticated access (remove auth headers)
-  - SQL injection (parameter fuzzing)
-  - XSS (context-aware payload injection)
-  - Path traversal (../ injection)
-  - Sensitive data in response
-  - Parameter pollution
-  - Rate limiting testing
+**Auto-test sequence**:
+1. Unauthenticated access (strip auth headers, re-request)
+2. SQL injection (error-based, time-based, boolean-based)
+3. Reflected XSS (context-aware payload injection)
+4. Path traversal (`../etc/passwd`, encoded variants)
+5. Sensitive data exposure (credit card, PII regex scan)
+6. Response analysis (headers, status codes, content)
+
+---
+
+#### `/fuzz <target> [mode]`
+**Automated fuzzing**: Parameter discovery, header injection, and endpoint fuzzing.
+
+**Modes**:
+- `params` — Parameter discovery using arjun + custom param list
+- `headers` — Header injection testing (Host override, X-Forwarded-For, Content-Type)
+- `custom` — User-provided wordlist and target field
+
+**Usage**:
 ```
+/fuzz https://target.com/api params
+/fuzz https://target.com/ headers
+```
+
+---
+
+### Exploitation
+
+#### `/exploit <vuln-type> <target>`
+**Guided exploitation assistance**: AI provides exploitation strategy, tool selection, payload generation, and step-by-step guidance for confirmed vulnerabilities.
+
+**Supported**:
+- `sqli` — SQL injection exploitation
+- `xss` — XSS proof-of-concept construction
+- `lfi` — LFI to RCE via log poisoning / PHP wrapper
+- `ssrf` — SSRF to internal service exploitation
+- `upload` — File upload to webshell
+- `idor` — IDOR parameter brute forcing
+- `jwt` — JWT forgery and manipulation
+
+**Usage**:
+```
+/exploit sqli https://target.com/login
+/exploit lfi https://target.com/page?file=test
+```
+
+---
+
+#### `/bypass <waf-type>`
+**WAF bypass strategy generation**: AI generates targeted evasion techniques for detected WAFs.
+
+**Supported WAFs**: Cloudflare, AWS WAF, ModSecurity, Akamai, F5 BIG-IP, SafeLine, Alibaba Cloud WAF, Imperva
+
+**Usage**: `/bypass cloudflare`
+
+**Output**: 
+- WAF-specific detection signatures
+- Evasion techniques by vulnerability type (SQLi, XSS, LFI)
+- Header manipulation approaches (HTTP method, encoding)
+- Origin IP discovery techniques
 
 ---
 
 ### Reporting
 
-#### `/report`
-Generate a comprehensive penetration testing report in markdown format. Compiles all findings from the current session.
+#### `/report [format]`
+**Professional report generation**: Compiles all session findings into structured penetration testing report.
 
-**Usage**: `/report`
+**Formats**:
+- `full` (default) — Complete pentest report with executive summary
+- `executive` — Management-focused risk overview
+- `technical` — Detailed technical findings for engineering teams
+- `json` — Machine-readable output for integration
 
-**Report sections**:
-- Executive summary (management overview)
-- Vulnerability details (per severity)
-- Attack chain analysis
-- Remediation recommendations
-- Appendices (raw data, tool output)
+**Usage**:
+```
+/report
+/report executive
+/report json
+```
+
+**Report sections**: Executive summary → Technical findings → Attack chain analysis → Compliance mapping → Remediation roadmap → Appendices
 
 ---
 
-## ⚙️ AI Analysis Engine
+#### `/timeline`
+**Session activity log**: Display chronological record of all commands executed and key findings in the current session.
 
-Claude processes all tool outputs through a multi-stage analysis pipeline:
+**Usage**: `/timeline`
 
-### Analysis Pipeline
-
-```
-Raw Tool Output
-     ↓
-┌─────────────────────┐
-│  Stage 1: Parser   │ → Structured data (JSON schema)
-└─────────────────────┘
-     ↓
-┌─────────────────────┐
-│  Stage 2: Enricher │ → Cross-reference (CVE DB, known exploits)
-└─────────────────────┘
-     ↓
-┌─────────────────────┐
-│  Stage 3: Filter   │ → False positive reduction (response size, status codes, context)
-└─────────────────────┘
-     ↓
-┌─────────────────────┐
-│  Stage 4: Ranker   │ → Priority scoring (CVSS, exploitability, impact)
-└─────────────────────┘
-     ↓
-┌─────────────────────┐
-│  Stage 5: Planner  │ → Attack chain construction + next-step recommendation
-└─────────────────────┘
-     ↓
-Structured Report
-```
-
-### Analysis Rules
-
-| Rule | Description |
-|------|-------------|
-| **Context-Aware FP Filter** | Analyzes response content, not just status codes. Example: a 200 response containing `"error":"invalid input"` is marked as NOT exploitable |
-| **Multi-Source Correlation** | Cross-correlates findings across tools. Same vulnerability detected by nmap + whatweb + manual check = higher confidence |
-| **Attack Chain Inference** | Identifies how low-severity issues combine into critical exploits (e.g., LFI + log poisoning = RCE) |
-| **WAF-Aware Detection** | Adjusts interpretation when WAF is detected (false negatives expected, suggests bypass techniques) |
-| **Priority Scoring** | Uses modified CVSS 3.1 scoring with contextual exploitation difficulty adjustment |
+**Output**: Timestamped log of commands, discovered vulnerabilities, and session statistics.
 
 ---
 
-## 🔧 Tool Requirements
+### Utilities
 
-### Mandatory Tools
+#### `/install`
+**Dependency management**: Install or verify all required security tools.
 
-```bash
-# System packages
-sudo apt install -y nmap whatweb dirsearch curl wget git python3-pip
+**Usage**: `/install`
 
-# Go tools (requires Go 1.18+)
-go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-go install github.com/ffuf/ffuf/v2@latest
-go install github.com/projectdiscovery/httpx/cmd/httpx@latest
+**Actions**: Checks each tool, installs missing dependencies, reports status.
 
-# Python tools
-pip3 install uro beautifulsoup4
+#### `/help [command]`
+**Detailed command reference**: Get usage details, options, and examples for any command.
+
+**Usage**:
+```
+/help
+/help recon
+/help scan
 ```
 
-### Recommended Tools
+---
 
-```bash
-# Go
-go install github.com/hakluke/hakrawler@latest
-go install github.com/tomnomnom/waybackurls@latest
-go install github.com/tomnomnom/gf@latest
-go install github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
-go install github.com/lc/gau@latest
+## ⚙️ AI Analysis Engine Specification
 
-# Python
-pip3 install arjun git-dumper
+### Multi-Stage Pipeline
 
-# Others
-sudo apt install -y sqlmap
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         ANALYSIS PIPELINE                            │
+├──────────┬───────────┬──────────┬──────────┬───────────┬───────────┤
+│  PARSE   │  ENRICH   │  FILTER  │  RANK    │  PLAN     │  REPORT   │
+├──────────┼───────────┼──────────┼──────────┼───────────┼───────────┤
+│ Raw →    │ CVE DB    │ Context  │ CVSS 3.1 │ Attack    │ Structured│
+│ JSON     │ Lookup    │ Analysis │ Modified │ Chains    │ Output    │
+├──────────┼───────────┼──────────┼──────────┼───────────┼───────────┤
+│ Parse    │ Map to    │ Response │ Score    │ Connect   │ Generate  │
+│ tool     │ known    │ content  │ with     │ findings  │ markdown  │
+│ output   │ exploits  │ analysis │ context  │ into      │ report    │
+│          │           │          │ modifiers│ paths     │           │
+├──────────┼───────────┼──────────┼──────────┼───────────┼───────────┤
+│ ~2s      │ ~3s       │ ~5s      │ ~1s      │ ~3s       │ ~5s       │
+└──────────┴───────────┴──────────┴──────────┴───────────┴───────────┘
 ```
 
-### Tool Verification
+### FP Filter Decision Logic
 
+```
+Input: Discovery {vulnerability_type, url, response, confidence}
+
+if response.code in [403, 404, 500]:
+    mark_as_false_positive("Blocked by access control or not found")
+    return
+
+if response.contains_error_but_sanitized():
+    mark_as_false_positive("Error message sanitized, not exploitable")
+    return
+
+if WAF_detected AND payload_matches_WAF_signature():
+    log("WAF likely blocked payload — suggest bypass technique")
+    mark_as_potential("WAF interference suspected")
+    return
+
+if vulnerability_type == SQL_INJECTION:
+    if response.time_delay_matches(SLEEP(5)):
+        mark_as_confirmed("Time-based SQL injection confirmed")
+        return
+    if response.contains(ERROR_PATTERNS["mysql"]) AND 
+       original_response.does_not_contain(ERROR_PATTERNS["mysql"]):
+        mark_as_confirmed("Error-based SQL injection confirmed")
+        return
+
+if vulnerability_type == XSS:
+    if payload_renders_in_response(response, original_payload):
+        mark_as_confirmed("Reflected XSS confirmed")
+        return
+    if response.context_matches(SCRIPT_CONTEXT) AND 
+       not response.is_output_encoded():
+        mark_as_confirmed("DOM-based XSS suspected")
+        return
+
+mark_as_potential("Weak indicators, manual verification recommended")
+```
+
+### Confidence Scoring Algorithm
+
+```
+Confidence = base_score(30) 
+           + tool_consensus_score(0-30)  # Multiple tools flag same issue
+           + response_analysis_score(0-20) # Response content matches vuln
+           + contextual_score(0-20)      # Environment context (WAF, auth, etc.)
+           - false_positive_penalty(0-30) # Known FP patterns detected
+```
+
+### Context Modifiers for CVSS 3.1
+
+```
++1.5  PII or sensitive data involved
++1.0  Public exploit code available
+-0.5  WAF or IDS detected
+-1.0  Authentication required
++1.0  No user interaction required  
+-0.5  High complexity exploitation path
+```
+
+---
+
+## 🔧 Toolchain
+
+### Mandatory
+```
+nmap whatweb dirsearch curl wget git python3 subfinder ffuf httpx
+```
+
+### Recommended
+```
+hakrawler waybackurls gf naabu gau nuclei sqlmap arjun git-dumper jwt_tool wafw00f
+```
+
+### Quick Verification
 ```bash
-for tool in nmap whatweb subfinder ffuf httpx; do
-    which $tool >/dev/null 2>&1 && echo "✓ $tool" || echo "✗ $tool (missing)"
+for tool in nmap whatweb subfinder ffuf httpx dirsearch; do
+    which $tool &>/dev/null && echo "✓ $tool" || echo "✗ $tool MISSING"
 done
 ```
 
@@ -243,27 +363,59 @@ done
 
 ## 📋 Workflow Guidelines
 
-### Before Testing
+### Testing Lifecycle
 
-1. Confirm written authorization from target owner
-2. Define clear scope boundaries (IP ranges, domains, test depth)
-3. Set up isolated testing environment if possible
-4. Verify all tools are installed and functional
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    PENETRATION TEST LIFECYCLE                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  PRE-ENGAGEMENT                                                  │
+│  ├── Define scope (IP ranges, domains, excluded targets)         │
+│  ├── Obtain written authorization                                │
+│  ├── Establish rules of engagement (testing hours, escalation)   │
+│  └── Configure toolchain                                         │
+│                                                                   │
+│  INTELLIGENCE GATHERING → `/recon`                                │
+│  ├── Passive reconnaissance (no direct interaction)              │
+│  ├── Active reconnaissance (controlled scanning)                 │
+│  └── Attack surface mapping                                      │
+│                                                                   │
+│  THREAT MODELING                                                  │
+│  ├── Identify high-value targets (admin panels, API endpoints)   │
+│  ├── Map attack vectors                                           │
+│  └── Prioritize testing areas                                    │
+│                                                                   │
+│  VULNERABILITY ANALYSIS → `/scan` `/check` `/fuzz`               │
+│  ├── Automated scanning                                           │
+│  ├── Manual verification                                          │
+│  └── False positive elimination                                  │
+│                                                                   │
+│  EXPLOITATION → `/exploit`                                        │
+│  ├── Confirm exploitability                                       │
+│  ├── Chain low-severity issues                                    │
+│  └── Document proof-of-concept                                   │
+│                                                                   │
+│  POST-EXPLOITATION                                                │
+│  ├── Lateral movement assessment                                  │
+│  ├── Privilege escalation paths                                   │
+│  └── Data access verification                                    │
+│                                                                   │
+│  REPORTING → `/report`                                            │
+│  ├── Technical report with reproduction steps                     │
+│  ├── Executive summary for management                             │
+│  └── Remediation roadmap                                          │
+│                                                                   │
+└──────────────────────────────────────────────────────────────────┘
+```
 
-### During Testing
+### Best Practices
 
-- Start with passive techniques before active scanning
-- Control request rate to avoid service disruption
-- Document every finding with timestamp and raw response
-- Verify findings manually before reporting
-- Handle PII/data with extreme care
-
-### After Testing
-
-- Remove any testing tools from target environment
-- Securely store test data (encrypted, access-controlled)
-- Generate comprehensive report within 48 hours
-- Follow responsible disclosure timeline (typically 90 days)
+1. **Start passive, end active** — Minimize target impact
+2. **Rate-limit scans** — Default: 50 req/s max, adjust for fragile targets
+3. **Document everything** — Timestamp each finding with raw response
+4. **Verify before reporting** — AI flags are indications, not confirmations
+5. **Handle data ethically** — PII discovered = stop and document only
 
 ---
 
@@ -271,27 +423,30 @@ done
 
 ```
 ClaudeSec/
-├── CLAUDE.md              # Claude skill definitions (this file)
-├── README.md              # Project documentation
+├── CLAUDE.md            # Claude skill definitions (this file)
+├── README.md            # Comprehensive project documentation
+├── CHANGELOG.md         # Version history
+├── LICENSE              # MIT license
+├── .gitignore           # Project-only git tracking
 ├── scripts/
-│   ├── install.sh         # One-click dependency installer
-│   └── verify.sh          # Tool installation verification
-├── wordlists/             # Custom wordlists (optional)
-├── docs/
-│   └── reference.md       # Detailed technical reference
-└── .gitignore
+│   ├── install.sh       # One-click dependency installer
+│   └── verify.sh        # Installation verification
+└── docs/
+    └── reference.md     # Technical reference manual (payloads, techniques, tools)
 ```
 
 ---
 
-## 📚 Learning Resources
+## 📚 Recommended Learning Path
 
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/) — Web application security risks
-- [PortSwigger Web Security Academy](https://portswigger.net/web-security) — Free hands-on security training
-- [HackTheBox](https://www.hackthebox.com/) — Practice platform
-- [PentesterLab](https://pentesterlab.com/) — Hands-on security exercises
-- [CVE Details](https://www.cvedetails.com/) — Vulnerability database
+| Stage | Resource | Focus |
+|-------|----------|-------|
+| 1 | [OWASP Top 10](https://owasp.org/www-project-top-ten/) | Web vulnerability fundamentals |
+| 2 | [PortSwigger Web Security Academy](https://portswigger.net/web-security) | Hands-on labs (free) |
+| 3 | [HackTheBox](https://www.hackthebox.com/) | Real-world practice |
+| 4 | [PentesterLab](https://pentesterlab.com/) | Structured exercises |
+| 5 | CVE research & bug bounty writeups | Advanced techniques |
 
 ---
 
-> **Remember**: With great power comes great responsibility. This framework amplifies your testing capability — use it ethically and legally.
+> **Responsibility notice**: This framework amplifies your testing capability — use it ethically, legally, and responsibly. The goal is to make systems more secure, not to compromise them.

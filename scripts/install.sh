@@ -144,6 +144,8 @@ install_go_tools() {
         "github.com/tomnomnom/gf@latest"
         "github.com/projectdiscovery/naabu/v2/cmd/naabu@latest"
         "github.com/lc/gau@latest"
+        "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
+        "github.com/projectdiscovery/interactsh/cmd/interactsh-client@latest"
     )
 
     for tool in "${optional_tools[@]}"; do
@@ -182,9 +184,9 @@ install_python_tools() {
     done
 
     # Optional: arjun, git-dumper
-    pip3 install arjun git-dumper 2>/dev/null && \
-        log_ok "arjun, git-dumper installed" || \
-        log_warn "arjun/git-dumper installation failed (optional)"
+    pip3 install arjun git-dumper wafw00f 2>/dev/null && \
+        log_ok "arjun, git-dumper, wafw00f installed" || \
+        log_warn "arjun/git-dumper/wafw00f installation failed (optional)"
 }
 
 # --- Verification ---

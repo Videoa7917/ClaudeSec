@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
 # ClaudeSec — Tool Installation Verifier
-# Version: 2.0.0
+# Version: 2.1.0
 # =============================================================================
 # Usage: ./scripts/verify.sh
 # =============================================================================
@@ -73,6 +73,8 @@ check_tool waybackurls
 check_tool gf
 check_tool naabu
 check_tool gau
+check_tool nuclei
+check_tool interactsh-client
 
 echo -e "\n${BLUE}[ Python Modules ]${NC}"
 check_python_module requests
